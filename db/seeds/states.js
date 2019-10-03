@@ -1,4 +1,4 @@
-import skiResortsStates from '../../skiResortsStates';
+const states = require('../../skiResortsStates');
 
 const createState = (knex, state) => {
   return knex('states').insert({
@@ -22,13 +22,17 @@ const createState = (knex, state) => {
   })
 }
 
+const createMountain = (knex, mountain) => {
+  return knex('mountains').insert(mountain);
+};
+
 exports.seed = function(knex) {
   return knex('mountains').del()
   .then(() => knex('states').del())
   .then(() => {
     let statePromises = [];
 
-    skiResortsStates.forEach(state => {
+    states.forEach(state => {
       statePromises.push(createState(knex, state));
     });
 
