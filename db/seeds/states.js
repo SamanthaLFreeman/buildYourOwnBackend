@@ -1,6 +1,26 @@
 import skiResortsStates from '../../skiResortsStates';
 
+const createState = (knex, state) => {
+  return knex('states').insert({
+    name: state.name,
+    avgSnow: state.avgSnow
+  }, 'id')
+  .then(stateId => {
+    let mountainsPromises = [];
 
+    state.mountains.forEach(mountain => {
+      mountainsPromises.push(createMountain(knex, {
+        name: mountain.name,
+        mountainHeight: mountain.mountainHeight,
+        size: mountain.size,
+        skiLifts:mountain.skiLifts,
+        states_id:stateId[0]
+      })
+    )
+  })
+    return Promise.all(mountainsPromises)
+  })
+}
 
 exports.seed = function(knex) {
   return knex('mountains').del()
@@ -9,7 +29,7 @@ exports.seed = function(knex) {
     let statePromises = [];
 
     skiResortsStates.forEach(state => {
-      statePromises.push(createStates(knex, state));
+      statePromises.push(createState(knex, state));
     });
 
     return Promise.all(statePromises);
