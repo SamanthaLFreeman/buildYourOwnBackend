@@ -22,6 +22,16 @@ app.get('/api/v1/states', (request, response) => {
     });
 });
 
+app.get('/api/v1/mountains', (request, response) => {
+  database('mountains').select()
+    .then((mountains) => {
+      response.status(200).json(mountains);
+    })
+    .catch((error) => {
+      response.status(500).json({ error });
+    });
+});
+
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on PORT ${app.get('port')}`)
 });
