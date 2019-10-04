@@ -32,6 +32,20 @@ app.get('/api/v1/mountains', (request, response) => {
     });
 });
 
+app.get('/api/v1/states/:id', (request, response) => {
+  database('states').where('id', request.params.id).select()
+    .then(states => {
+      if (states.length) {
+        response.status(200).json(states);
+      } else {
+        response.status(404).json({error: `Couldn't find a state with id ${request.params.id}`});
+      }
+    })
+    .catch(error => {
+      response.status(500).json({error});
+    });
+});
+
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on PORT ${app.get('port')}`)
 });
