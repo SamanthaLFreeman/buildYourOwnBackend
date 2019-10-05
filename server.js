@@ -99,6 +99,22 @@ app.post('/api/v1/mountains', (request, response) => {
     });
 });
 
+app.delete('/api/v1/mountains/:id', (request, response) => {
+  const mountainId = request.params.id;
+  database('mountains').where('id', mountainId)
+    .then(mountain => {
+      if (mountain.length) {
+        database('mountains').where('id', mountainId).del()
+        .then(() => response.status(201).json("Mountain has been removed."));
+      } else {
+        response.status(404).json({ error: `Couldn't find a mountain with id ${request.params.id}` });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on PORT ${app.get('port')}`)
 });
