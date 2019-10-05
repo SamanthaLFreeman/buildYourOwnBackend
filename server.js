@@ -60,6 +60,45 @@ app.get('/api/v1/mountains/:id', (request, response) => {
     });
 });
 
+app.post('/api/v1/states', (request, response) => {
+  const state = request.body;
+
+  for (let requiredParameter of ['name', 'avgSnow']) {
+    if (!state[requiredParameter]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { name: <String>, avgSnow: <String> }. You're missing a "${requiredParameter}" property.` });
+    }
+  }
+
+  database('states').insert(state, 'id')
+    .then(stateId => {
+      response.status(201).json({ id: stateId[0] })
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
+app.post('/api/v1/mountains', (request, response) => {
+  const mountain = request.body;
+  for (let requiredParameter of ['name', 'mountainHeight', 'size', 'skiLifts', 'states_id']) {
+    if (!mountain[requiredParameter]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { name: <String>, mountainHeight: <String>, size: <String>, skiLifts: <Number>, states_id: <Number> }. You're missing a "${requiredParameter}" property.` });
+    }
+  }
+
+  database('mountains').insert(mountain, 'id')
+    .then(mountainId => {
+      response.status(201).json({ id: mountainId[0] })
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on PORT ${app.get('port')}`)
 });
