@@ -147,7 +147,7 @@ app.post('/api/v1/mountains', (request, response) => {
     .then(mountainId => {
 //if there is a mountain id then it returns a status code of 201
 //along with an array, so you have to grab the first index to get the id we requested returned in the previous line
-      response.status(201).json({ id: mountainId[0] })
+      response.status(201).json({ id: mountainId[0] });
     })
 //if there is an server error, then it returns the status code 500 with a message
     .catch(error => {
@@ -184,6 +184,6 @@ app.delete('/api/v1/mountains/:id', (request, response) => {
 //app "listens" for connection to the given port defined in the top of the server.js file
 app.listen(app.get('port'), () => {
 //console logs the development port the app is running on
-  console.log(`${app.locals.title} is running on PORT ${app.get('port')}`)
+  console.log(`${app.locals.title} is running on PORT ${app.get('port')}`);
 });
 
