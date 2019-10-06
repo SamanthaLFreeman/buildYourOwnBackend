@@ -74,7 +74,7 @@ app.get('/api/v1/states/:id', (request, response) => {
     });
 });
 
-//sets up the '/mountains/:id' GET endpoint for finding a specific state
+//sets up the '/mountains/:id' GET endpoint for finding a specific mountain
 app.get('/api/v1/mountains/:id', (request, response) => {
 //Looks in the database for the 'mountains' table.
 //Where method then searches for the row with the 'id' column with the same integer value passed through the path
@@ -155,17 +155,27 @@ app.post('/api/v1/mountains', (request, response) => {
     });
 });
 
+//sets up the '/mountains/:id' DELETE endpoint for removing a specific mountain
 app.delete('/api/v1/mountains/:id', (request, response) => {
+//assign the id from the path to mountainId
   const mountainId = request.params.id;
+
+//Looks in the database for the 'mountains' table.
+//Where method then searches for the row with the 'id' column with the same integer value as mountainId
   database('mountains').where('id', mountainId)
     .then(mountain => {
+//if the mountain found has length (truthy), then find the mountain in the table so it can be removed
+//with the del method
+//then returns a response of 201 with a message that it was succesfully removed
       if (mountain.length) {
         database('mountains').where('id', mountainId).del()
         .then(() => response.status(201).json("Mountain has been removed."));
       } else {
+//else a 404 status code is returned with a error message that the id cannot be found
         response.status(404).json({ error: `Couldn't find a mountain with id ${request.params.id}` });
       }
     })
+//if there is an server error, then it returns the status code 500 with a message
     .catch(error => {
       response.status(500).json({ error });
     });
