@@ -34,9 +34,9 @@ app.get('/api/v1/mountains', (request, response) => {
 
 app.get('/api/v1/states/:id', (request, response) => {
   database('states').where('id', request.params.id).select()
-    .then(states => {
-      if (states.length) {
-        response.status(200).json(states);
+    .then(state => {
+      if (state.length) {
+        response.status(200).json(state);
       } else {
         response.status(404).json({error: `Couldn't find a state with id ${request.params.id}`});
       }
@@ -48,9 +48,9 @@ app.get('/api/v1/states/:id', (request, response) => {
 
 app.get('/api/v1/mountains/:id', (request, response) => {
   database('mountains').where('id', request.params.id).select()
-    .then(mountains => {
-      if (mountains.length) {
-        response.status(200).json(mountains);
+    .then(mountain => {
+      if (mountain.length) {
+        response.status(200).json(mountain);
       } else {
         response.status(404).json({ error: `Couldn't find a mountain with id ${request.params.id}` });
       }
@@ -82,6 +82,7 @@ app.post('/api/v1/states', (request, response) => {
 
 app.post('/api/v1/mountains', (request, response) => {
   const mountain = request.body;
+
   for (let requiredParameter of ['name', 'mountainHeight', 'size', 'skiLifts', 'states_id']) {
     if (!mountain[requiredParameter]) {
       return response
@@ -92,7 +93,7 @@ app.post('/api/v1/mountains', (request, response) => {
 
   database('mountains').insert(mountain, 'id')
     .then(mountainId => {
-      response.status(201).json({ id: mountainId[0] })
+      response.status(201).json({ id: mountainId[0] });
     })
     .catch(error => {
       response.status(500).json({ error });
@@ -101,6 +102,7 @@ app.post('/api/v1/mountains', (request, response) => {
 
 app.delete('/api/v1/mountains/:id', (request, response) => {
   const mountainId = request.params.id;
+
   database('mountains').where('id', mountainId)
     .then(mountain => {
       if (mountain.length) {
@@ -116,6 +118,6 @@ app.delete('/api/v1/mountains/:id', (request, response) => {
 });
 
 app.listen(app.get('port'), () => {
-  console.log(`${app.locals.title} is running on PORT ${app.get('port')}`)
+  console.log(`${app.locals.title} is running on PORT ${app.get('port')}`);
 });
 
