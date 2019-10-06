@@ -1,32 +1,53 @@
+//Make express framework available in the server file (makes node.js easier to use)
 const express = require('express');
+//Create basic app server
 const app = express();
+//assign the environment based on the process variables, which can vary depending on where the application is running
 const environment = process.env.NODE_ENV || 'development';
+//assigns configuration to work with the knex database
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 
+//set up the 'port' if there is none specified, then it will run on 3000
 app.set('port', process.env.PORT || 3000);
+//assign a title for the backend application
 app.locals.title = 'skiResortStates';
+//parses incoming requests with JSON payloads
 app.use(express.json());
 
+//set up initial endpoint, for the home path
 app.get('/', (request, response) => {
+//the endpoint handler prints a message on the DOM
   response.send('Find the Ski Resorts for each state!');
 });
 
+//sets up the '/states' GET endpoint
 app.get('/api/v1/states', (request, response) => {
+//Looks in the database for the 'states' table, select 
+//returns an array of objects in the database
   database('states').select()
+//if an array returns then it returns a status code of 200 with the whole array
     .then((states) => {
       response.status(200).json(states);
     })
+//else if an error returns, then it returns a 500 status code (something wrong with server)
+//along with the error message
     .catch((error) => {
       response.status(500).json({ error });
     });
 });
 
+//sets up the '/mountains' GET endpoint
 app.get('/api/v1/mountains', (request, response) => {
+//Looks in the database for the 'states' table, select 
+//returns an array of objects in the database
   database('mountains').select()
+//if an array returns then it returns a status code of 200 with the whole array
     .then((mountains) => {
       response.status(200).json(mountains);
     })
+//else if an error returns, then it returns a 500 status code (something wrong with server)
+//along with the error message
     .catch((error) => {
       response.status(500).json({ error });
     });
