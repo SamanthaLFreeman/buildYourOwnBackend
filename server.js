@@ -181,7 +181,9 @@ app.delete('/api/v1/mountains/:id', (request, response) => {
     });
 });
 
+//app "listens" for connection to the given port defined in the top of the server.js file
 app.listen(app.get('port'), () => {
+//console logs the development port the app is running on
   console.log(`${app.locals.title} is running on PORT ${app.get('port')}`)
 });
 
