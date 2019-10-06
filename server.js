@@ -39,7 +39,7 @@ app.get('/api/v1/states', (request, response) => {
 
 //sets up the '/mountains' GET endpoint
 app.get('/api/v1/mountains', (request, response) => {
-//Looks in the database for the 'states' table, select 
+//Looks in the database for the 'mountains' table, select 
 //returns an array of objects in the database
   database('mountains').select()
 //if an array returns then it returns a status code of 200 with the whole array
@@ -53,29 +53,43 @@ app.get('/api/v1/mountains', (request, response) => {
     });
 });
 
+//sets up the '/states/:id' GET endpoint for finding a specific state
 app.get('/api/v1/states/:id', (request, response) => {
+//Looks in the database for the 'states' table.
+//Where method then searches for the row with the 'id' column with the same integer value passed through the path
+//Then select returns the object found
   database('states').where('id', request.params.id).select()
-    .then(states => {
-      if (states.length) {
-        response.status(200).json(states);
+    .then(state => {
+//if the object has length (truthy), then 200 status code is returned with the found state
+      if (state.length) {
+        response.status(200).json(state);
+//else the 404 status code is returned with an error message that the specific id wasn't available
       } else {
         response.status(404).json({error: `Couldn't find a state with id ${request.params.id}`});
       }
     })
+//if there was a server error, then an error returns a 500 status code
     .catch(error => {
       response.status(500).json({error});
     });
 });
 
+//sets up the '/mountains/:id' GET endpoint for finding a specific state
 app.get('/api/v1/mountains/:id', (request, response) => {
+//Looks in the database for the 'mountains' table.
+//Where method then searches for the row with the 'id' column with the same integer value passed through the path
+//Then select returns the object found
   database('mountains').where('id', request.params.id).select()
-    .then(mountains => {
-      if (mountains.length) {
-        response.status(200).json(mountains);
+    .then(mountain => {
+//if the object has length (truthy), then 200 status code is returned with the found state
+      if (mountain.length) {
+        response.status(200).json(mountain);
+//else the 404 status code is returned with an error message that the specific id wasn't available
       } else {
         response.status(404).json({ error: `Couldn't find a mountain with id ${request.params.id}` });
       }
     })
+//if there was a server error, then an error returns a 500 status code
     .catch(error => {
       response.status(500).json({ error });
     });
