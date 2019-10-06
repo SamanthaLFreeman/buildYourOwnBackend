@@ -95,40 +95,61 @@ app.get('/api/v1/mountains/:id', (request, response) => {
     });
 });
 
+//sets up the '/states/' POST endpoint for adding a state to the array of states
 app.post('/api/v1/states', (request, response) => {
+//assigns the request body to state
   const state = request.body;
 
+//set up required parameters for the request body listing all names in an array
   for (let requiredParameter of ['name', 'avgSnow']) {
+//if the passed through state doesn't have the notated required parameters
     if (!state[requiredParameter]) {
+//then it returns a 422 status code with a message of what is missing from the request body
       return response
         .status(422)
         .send({ error: `Expected format: { name: <String>, avgSnow: <String> }. You're missing a "${requiredParameter}" property.` });
     }
   }
 
+//if nothing is missing from the request body, then searches in the database for the 'states' table
+//insert method can define what data is being added with what is returning as a response
   database('states').insert(state, 'id')
     .then(stateId => {
+//if there is a state id then it returns a status code of 201
+//along with an array, so you have to grab the first index to get the id we requested returned in the previous line
       response.status(201).json({ id: stateId[0] })
     })
+//if there is an server error, then it returns the status code 500 with a message
     .catch(error => {
       response.status(500).json({ error });
     });
 });
 
+//sets up the '/mountains/' POST endpoint for adding a mountain to the array of mountains
 app.post('/api/v1/mountains', (request, response) => {
+//assigns the request body to mountain
   const mountain = request.body;
+
+//set up required parameters for the request body listing all names in an array
   for (let requiredParameter of ['name', 'mountainHeight', 'size', 'skiLifts', 'states_id']) {
+//if the passed through state doesn't have the notated required parameters
     if (!mountain[requiredParameter]) {
+//then it returns a 422 status code with a message of what is missing from the request body
       return response
         .status(422)
         .send({ error: `Expected format: { name: <String>, mountainHeight: <String>, size: <String>, skiLifts: <Number>, states_id: <Number> }. You're missing a "${requiredParameter}" property.` });
     }
   }
 
+//if nothing is missing from the request body, then searches in the database for the 'mountains' table
+//insert method can define what data is being added with what is returning as a response
   database('mountains').insert(mountain, 'id')
     .then(mountainId => {
+//if there is a mountain id then it returns a status code of 201
+//along with an array, so you have to grab the first index to get the id we requested returned in the previous line
       response.status(201).json({ id: mountainId[0] })
     })
+//if there is an server error, then it returns the status code 500 with a message
     .catch(error => {
       response.status(500).json({ error });
     });
